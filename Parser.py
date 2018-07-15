@@ -21,35 +21,42 @@ class HTMLControl :
 
 
 class Parsing(HTMLControl) :
-    def __init__(self,url):
-        self.html = self.getHTML(url)
+    def __init__(self):
+        self.URL = "http://ref.comgal.info/sjzb.php?id=cgref&page="
+        self.html = ""
+        self.articlelist = []
     def Article(self,day):
-        list = []
+        c = 1
+        page = 1
+        while c > 0 :
+            self.html = self.getHTML(self.URL+str(page))
+            c = self.processData(day)
+            page += 1
+        return self.articlelist
+
+    def processData(self,day):
+        count =0
         while self.html.find('cart') >=0 :
             # Cart value를 단위로 처리
             self.html = self.cutString(self.html,'cart','',2,0)
-
             # 거르기
             if not self._Num():
                 continue
             if not self._Day(day):
                 break
-
             # 글 리스트 만들기
-            list.append({'no': self._Num(),'title': self._Title(),'coNum':self._coNum(),'views':self._Views()})
-
-        for a in list:
-            print(a)
+            self.articlelist.append({'no': self._Num(),'title': self._Title(),'coNum':self._coNum(),'views':self._Views()})
+            count += 1
+        return count
 
     # 날짜 설정 형식 today or yy/mm/dd or all
     # 지정한 날짜의 글만 긁어오기
     def _Day(self,day):
-        length = len('span title="2018년 07월 15일 15시 17분 49초"')
-        h = self.cutString(self.html, 'span title=')
-        date = self.cutString(h, 'span title=', '</span>', length, 0)
+        h = self.cutString(self.html, 'span title','',0,0)
+        date = self.cutString(h,'초', '</span>', 3, 0)
 
         if day == 'today':
-            if len(date) > 5 :
+            if len(date) > 6 :
                 return False
             else :
                 return True
