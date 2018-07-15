@@ -78,7 +78,8 @@ class Parsing(HTMLControl) :
             if len(mon) == 1: mon = "0" + mon
 
             # 필요없는거 지나치기
-            # 1. 해당되지 않는 월
+            # 1. 해당되지 않는 월 pass
+            # 2. 해당되면 detect 처리
             if art_mon != mon and self.mondetect == False:
                 return 'pass'
             elif art_mon == mon :

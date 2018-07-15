@@ -17,7 +17,7 @@ user_id = ''
 password = ''
 session = LOGIN_SESSION.Login(logURL, user_id, password)
 
-
+# day설정 : today / month / 'yyyy/mm/dd'
 day = 'month'
 mon = '6'
 p = Parser.Parsing()
@@ -25,11 +25,13 @@ ParsedList = p.Article(day,mon)
 content = ''
 links=''
 
-
+# SORT
 count = 0
 for a in ParsedList :
     a['score'] = int(a['views']) + 4*int(a['coNum'])
 ParsedList = sorted(ParsedList,key=itemgetter('score'),reverse=True)
+
+# 보낼 글로 변환해서 저장
 for a in ParsedList :
     content += f'글번호 : {a["no"]}   제목 :   {a["title"]} [{a["coNum"]}]'+f'{"조회수":>10}'+f' : {a["views"]} \n\n'
     links += '<a href="http://ref.comgal.info/sjzb.php?id=cgref&no='+a['no']+'"><b> - '+a['title']+'</b><br><br>'
