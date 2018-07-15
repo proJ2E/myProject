@@ -1,5 +1,7 @@
 from bs4 import  BeautifulSoup
 import requests
+import time
+from time import sleep
 
 class HTMLControl :
     def getHTML(self,url):
@@ -25,16 +27,18 @@ class Parsing(HTMLControl) :
         self.URL = "http://ref.comgal.info/sjzb.php?id=cgref&page="
         self.html = ""
         self.articlelist = []
-    def Article(self,day):
+        self.mondetect = False
+    def Article(self,day,mon=''):
         c = 1
         page = 1
         while c > 0 :
             self.html = self.getHTML(self.URL+str(page))
-            c = self.processData(day)
+            c = self.processData(day,mon)
             page += 1
+            sleep(0.05)
         return self.articlelist
 
-    def processData(self,day):
+    def processData(self,day,mon):
         count =0
         while self.html.find('cart') >=0 :
             # Cart value를 단위로 처리
@@ -42,17 +46,22 @@ class Parsing(HTMLControl) :
             # 거르기
             if not self._Num():
                 continue
-            if not self._Day(day):
+            elif not self._Day(day,mon):
                 break
+            elif self._Day(day,mon) == 'pass' :
+                count += 1
+                continue
+
             # 글 리스트 만들기
             self.articlelist.append({'no': self._Num(),'title': self._Title(),'coNum':self._coNum(),'views':self._Views()})
             count += 1
         return count
 
-    # 날짜 설정 형식 today or yy/mm/dd or all
+    # 날짜 설정 형식 today or yyyy/mm/dd or month
     # 지정한 날짜의 글만 긁어오기
-    def _Day(self,day):
+    def _Day(self,day,mon):
         h = self.cutString(self.html, 'span title','',0,0)
+        art_mon = self.cutString(h,'년','월',2,0)
         date = self.cutString(h,'초', '</span>', 3, 0)
 
         if day == 'today':
@@ -60,11 +69,31 @@ class Parsing(HTMLControl) :
                 return False
             else :
                 return True
-        elif day == 'all':
-            return True
+        elif day == 'month':
+            t = time.localtime()
+            # mon 검색월 , now_mon = 현월 ,art_mon = 작성월
+            # 현월 설정
+            now_mon = str(t.tm_mon)
+            if len(now_mon)==1 : now_mon = "0" + now_mon
+            if len(mon) == 1: mon = "0" + mon
+
+            # 필요없는거 지나치기
+            # 1. 해당되지 않는 월
+            if art_mon != mon and self.mondetect == False:
+                return 'pass'
+            elif art_mon == mon :
+                if not self.mondetect :
+                    self.mondetect = True
+                return True
+            else :
+                return False
+
         else :
             if date==day :
                 return True
+            elif len(date) < 7 :
+                #print('P ' + date + ' ' + art_mon)
+                return 'pass'
             else :
                 return False
 

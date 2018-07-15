@@ -2,12 +2,11 @@ import html
 from time import sleep
 
 class REQ:
-    def __init__(self,url,s):
-        self.URL= url
+    def __init__(self,s):
         self.session = s
 
     #File Path parma으로 추가해야함
-    def Article(self,subject,content,link1):
+    def Article(self,subject,content,link1=''):
         # 추후 FIle의 경로는 따로 변경.
         '''
         files ={
@@ -28,9 +27,11 @@ class REQ:
             'Content-Length': str(len(str(sendData)))
         }
         #REQ
-        writeReq =  self.session.post(self.URL,headers=custom,data=sendData)
+        URL = "http://ref.comgal.info/write_ok.php?id=cgref"
+        writeReq =  self.session.post(URL,headers=custom,data=sendData)
         if writeReq.status_code==200 :
             print("POSTED")
+            return writeReq.text
         else:
             print("FAILED")
             print(writeReq.status_code)
@@ -46,7 +47,8 @@ class REQ:
             'Method': 'POST',
             'Content-Length': str(len(str(sendData)))
         }
-        writeReq = self.session.post(self.URL,headers=custom,data=sendData)
+        URL = "http://ref.comgal.info/comment_ok.php?id=cgref"
+        writeReq = self.session.post(URL,headers=custom,data=sendData)
         if writeReq.status_code == 200:
             print("POSTED")
             # print(writeReq.headers)
