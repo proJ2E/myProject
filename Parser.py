@@ -3,14 +3,14 @@ import requests
 
 class HTMLControl :
     def getHTML(self,url):
-        req = requests.get(url)
+        self.req = requests.get(url)
         HTML = self.req.text
         return HTML
 
     def cutString(self,strS,s1,s2='',l1=1,l2=1):
         # l1,l2는 찾은 문자열로부터의 거리
         # recommend: l1 = len(str(s1))
-        if s2=='':
+        if not s2=='':
             index1 = strS.find(s1) + l1
             index2 = strS.find(s2) - l2
             result = strS[index1:index2]
@@ -18,6 +18,73 @@ class HTMLControl :
             index1 = strS.find(s1) +l1
             result = strS[index1:]
         return result
+
+
+class Parsing(HTMLControl) :
+    def __init__(self,url):
+        self.html = self.getHTML(url)
+    def Article(self,day):
+        list = []
+        while self.html.find('cart') >=0 :
+            # Cart value를 단위로 처리
+            self.html = self.cutString(self.html,'cart','',2,0)
+
+            # 거르기
+            if not self._Num():
+                continue
+            if not self._Day(day):
+                break
+
+            # 글 리스트 만들기
+            list.append({'no': self._Num(),'title': self._Title(),'coNum':self._coNum(),'views':self._Views()})
+
+        for a in list:
+            print(a)
+
+    # 날짜 설정 형식 today or yy/mm/dd or all
+    # 지정한 날짜의 글만 긁어오기
+    def _Day(self,day):
+        length = len('span title="2018년 07월 15일 15시 17분 49초"')
+        h = self.cutString(self.html, 'span title=')
+        date = self.cutString(h, 'span title=', '</span>', length, 0)
+
+        if day == 'today':
+            if len(date) > 5 :
+                return False
+            else :
+                return True
+        elif day == 'all':
+            return True
+        else :
+            if date==day :
+                return True
+            else :
+                return False
+
+
+    # 글 내용 파싱하는 부분
+    def _Num(self):
+        no = self.cutString(self.html, 'color="', '</span', 15, 0)
+        return no
+    def _Title(self):
+        self.html = self.cutString(self.html,'a href','',4,1)
+        title = self.cutString(self.html,'>','<',1,0)
+        return title
+    def _coNum(self):
+        self.html = self.cutString(self.html,'font style','',10,0)
+        coNo = self.cutString(self.html,'>','<',2,0)
+        if not coNo :
+            coNo="0"
+        else :
+            coNo=self.cutString(coNo,'[',']',1,0)
+        return coNo
+    def _Views(self):
+        i=0
+        while i<2:
+            i+=1
+            self.html=self.cutString(self.html,'font color','',10,0)
+        views = self.cutString(self.html,'>','<',1,0)
+        return views
 
 
     ''' soup를 이용한 PARSER
