@@ -36,6 +36,7 @@ class Parsing(HTMLControl) :
         # searchDetect 는 해당 페이지에 더 이상 검색할 내용이 없음을 감지해줌
         while searchDetect :
             self.html = self.getHTML(self.URL+str(page))
+            print(page)
             searchDetect = self.ProcessData(self.day,self.mon)
             page += 1
             sleep(0.05)
@@ -100,12 +101,15 @@ class Parsing(HTMLControl) :
                 return False
         # yyyy/mm/dd 형식으로 입력받았을때
         else :
-            if date==day :
+            if date == day:
+                self.mondetect = True
                 return True
-            elif len(date) < 7 :
-                #print('P ' + date + ' ' + art_mon)
+            elif len(date) < 6:
+                print('P ' + date + ' ' + art_mon)
                 return 'pass'
-            else :
+            else:
+                if not self.mondetect :
+                    return "pass"
                 return False
 
 
