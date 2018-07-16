@@ -22,16 +22,15 @@ class HTMLControl :
 
 
 class Parsing(HTMLControl) :
-    def __init__(self):
+    def __init__(self,user_input):
         self.URL = "http://ref.comgal.info/sjzb.php?id=cgref&page="
         self.html = ""
         self.articlelist = []
         self.mondetect = False
-        self.day=''
-        self.mon=''
+        self.day= user_input['day']
+        self.mon= user_input['mon']
 
     def Get_article_info(self):
-        self.Set_userinput()
         searchDetect = True
         page = 1
         # searchDetect 는 해당 페이지에 더 이상 검색할 내용이 없음을 감지해줌
@@ -41,15 +40,6 @@ class Parsing(HTMLControl) :
             page += 1
             sleep(0.05)
         return self.articlelist
-
-    def Set_userinput(self):
-        self.day = input('검색할 날짜를 입력해주세요 (월단위는 month) \n'
-                         'today or yyyy/mm/dd or month \n : ')
-        if self.day == 'month':
-            self.mon = input('검색할 달을 입력해주세요 ex) 3\n : ')
-        else:
-            self.mon = "00"
-        return
 
     def ProcessData(self,day,mon):
         detect = False
@@ -68,7 +58,7 @@ class Parsing(HTMLControl) :
                 continue
 
             # 글 리스트 만들기
-            self.articlelist.append({'no': self._Num(),'title': self._Title(),'coNum':self._coNum(),'views':self._Views()})
+            self.articlelist.append({'no': self._Num(),'title': self._Title(),'name':self._Name(),'coNum':self._coNum(),'views':self._Views()})
             detect = True
 
         return detect
@@ -135,6 +125,10 @@ class Parsing(HTMLControl) :
         else :
             coNo=self.cutString(coNo,'[',']',1,0)
         return coNo
+    def _Name(self):
+        ml = self.cutString(self.html,'hand','',4,1)
+        name = self.cutString(ml,'>','span',1,2)
+        return name
     def _Views(self):
         i=0
         while i<2:

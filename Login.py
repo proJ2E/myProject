@@ -3,10 +3,10 @@ import requests
 피난갤 로그인 소스
 '''
 class Login:
-    def __init__(self):
+    def __init__(self,user_input):
         self.url = "http://ref.comgal.info/login_check.php"
-        self.user_id = input("ID를 입력해주세요 : ")
-        self.password = input("비밀번호를 입력해주세요 : ")
+        self.user_id = user_input['user_id']
+        self.password = user_input['password']
 
     def GetSession(self):
         with requests.session() as s:
