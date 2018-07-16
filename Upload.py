@@ -12,7 +12,7 @@ class Upload:
         res = self.Article(input('제목을 입력해주세요 : '),content['article_content'])
         h = HTMLControl()
         num = h.cutString(str(res), 'no', 'cat', 3, 1)
-        self.Comment(num,content['comment_content'])
+        #self.Comment(num,content['comment_content'])
         return
 
     # Upload Article
@@ -39,7 +39,8 @@ class Upload:
         self.sendData = {
             'subject' : str(subject),
             'memo' : content,
-            'link1' : link1
+            'link1' : link1,
+            'use_html' : "2"
         }
         self.header = {
             'Referer' : "http://ref.comgal.info/write.php?id=cgref",

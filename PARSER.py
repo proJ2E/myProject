@@ -104,7 +104,7 @@ class Parsing(HTMLControl) :
                 self.mondetect = True
                 return True
             elif len(date) < 6:
-                print('P ' + date + ' ' + art_mon)
+                #print('P ' + date + ' ' + art_mon)
                 return 'pass'
             else:
                 if not self.mondetect :

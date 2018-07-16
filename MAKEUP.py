@@ -12,27 +12,29 @@ class Makeup:
         self.Calculate_average()
         self.Sort_data()
         # 보낼 글로 변환해서 저장
-        self.article_content += f' 검색일 조회수 평균 :{round(self.ave_data["ave_views"],2)} \n' \
-                                f'          댓글수 평균 :{round(self.ave_data["ave_coNum"],2)}\n\n' \
-                                f"댓글에 글 제목을 누르면 링크로 이동합니다."
+        self.article_content += f' 검색일 조회수 평균 :{round(self.ave_data["ave_views"],2)} <br>\n' \
+                                f'          댓글수 평균 :{round(self.ave_data["ave_coNum"],2)}<br><br>\n\n\n'
         for a in self.ParsedList :
-            #self.article_content += f' 제목 :   {a["title"]} ' \
-            #                        f'[{a["coNum"]}]'+\
-            #                        f'{"조회수":>10}'+\
-            #                        f' : {a["views"]} ' \
-            #                        f'\n\n'
+            self.article_content += '<a href="http://ref.comgal.info/sjzb.php?id=cgref&no='\
+                                    +a['no']+'"><b> - '\
+                                    +a['title']+f'  [{a["coNum"]}]</b>'\
+                                    +'</a><br>'+f'조회수: {a["views"]}'\
+                                    +f'{"&nbsp;"*(20-len(a["views"]))}'+f'작성자 :{a["name"]}'\
+                                    +'<br><br>'
+            '''
             self.comment_content += '<a href="http://ref.comgal.info/sjzb.php?id=cgref&no='\
                                     +a['no']+'"><b> - '\
                                     +a['title']+f'  [{a["coNum"]}]</b>'\
                                     +'</a><br>'+f'조회수: {a["views"]}'\
                                     +f'{"&nbsp;"*(20-len(a["views"]))}'+f'작성자 :{a["name"]}'\
                                     +'<br><br>'
+            '''
             if count >= self.exposed_num :
                 break
             count += 1
         self.subject = 'Hot Post 10'
         content  = {'article_content':self.article_content,'comment_content': self.comment_content}
-        print(content['article_content'])
+        #print(content['article_content'])
         return content
 
     def Calculate_average(self):
