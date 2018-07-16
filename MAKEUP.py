@@ -13,7 +13,8 @@ class Makeup:
         self.Sort_data()
         # 보낼 글로 변환해서 저장
         self.article_content += f' 검색일 조회수 평균 :{round(self.ave_data["ave_views"],2)} \n' \
-                                f'        댓글수 평균 :{round(self.ave_data["ave_coNum"],2)}\n\n'
+                                f'          댓글수 평균 :{round(self.ave_data["ave_coNum"],2)}\n\n' \
+                                f"댓글에 글 제목을 누르면 링크로 이동합니다."
         for a in self.ParsedList :
             #self.article_content += f' 제목 :   {a["title"]} ' \
             #                        f'[{a["coNum"]}]'+\
@@ -27,7 +28,6 @@ class Makeup:
                                     +f'{"&nbsp;"*(20-len(a["views"]))}'+f'작성자 :{a["name"]}'\
                                     +'<br><br>'
             if count >= self.exposed_num :
-                self.article_content += "댓글에 글 제목을 누르면 링크로 이동합니다."
                 break
             count += 1
         self.subject = 'Hot Post 10'

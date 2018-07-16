@@ -36,7 +36,6 @@ class Parsing(HTMLControl) :
         # searchDetect 는 해당 페이지에 더 이상 검색할 내용이 없음을 감지해줌
         while searchDetect :
             self.html = self.getHTML(self.URL+str(page))
-            print(page)
             searchDetect = self.ProcessData(self.day,self.mon)
             page += 1
             sleep(0.05)
